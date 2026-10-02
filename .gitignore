@@ -1,0 +1,23 @@
+# Credentials — NEVER commit these
+credentials.txt
+.env
+*.token
+
+# Backup output
+deepseek_backups/
+*.txt
+!README.md
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
