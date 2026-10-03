@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮 DeepSeek Backup - Never Lose a Chat Again</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==================== THEME VARIABLES ==================== */
+        :root {
+            --primary-dark: #0f0f1e;
+            --primary-darker: #0a0a14;
+            --primary-light: #1a1a2e;
+            --primary-lighter: #252541;
+            
+            --accent-purple: #a855f7;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-pink: #ec4899;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --text-tertiary: #a0a0a0;
+            
+            --border-color: rgba(168, 85, 247, 0.15);
+            --border-color-light: rgba(168, 85, 247, 0.25);
+            
+            --transition-fast: 0.2s ease-in-out;
+            --transition-normal: 0.3s ease-in-out;
+            --transition-slow: 0.5s ease-in-out;
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 16px 48px rgba(168, 85, 247, 0.15);
+        }
+        
+        /* ==================== RESET & BASE ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-darker) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--primary-darker);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+        }
+        
+        /* Selection */
+        ::selection {
+            background: var(--accent-purple);
+            color: white;
+        }
+        
+        /* ==================== NAVIGATION ==================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(10, 10, 20, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            transition: var(--transition-normal);
+        }
+        
+        .navbar-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+        
+        .navbar-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+        }
+        
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+            transition: var(--transition-normal);
+        }
+        
+        .navbar-menu a:hover {
+            color: var(--text-primary);
+        }
+        
+        .navbar-menu a:hover::after {
+            width: 100%;
+        }
+        
+        .navbar-cta {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            color: white;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+        }
+        
+        .btn-secondary {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color-light);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(168, 85, 247, 0.3);
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            background: var(--accent-green);
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            opacity: 0.9;
+        }
+        
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 5rem 2rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+            animation: orb 20s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        @keyframes orb {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(-50px, 50px);
+            }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid var(--border-color-light);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 50%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+        
+        /* ==================== CONTAINER ==================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .section {
+            padding: 5rem 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+            border-radius: 2px;
+        }
+        
+        /* ==================== WHY SECTION ==================== */
+        .why-section {
+            background: rgba(168, 85, 247, 0.05);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .why-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .why-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .why-text p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+        
+        .problem-statement {
+            background: rgba(236, 72, 153, 0.1);
+            border-left: 4px solid var(--accent-pink);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .why-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ==================== FEATURES GRID ==================== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: var(--transition-slow);
+        }
+        
+        .feature-card:hover::before {
+            left: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-purple);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* ==================== TECH STACK ==================== */
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+        
+        .tech-item {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: var(--transition-normal);
+        }
+        
+        .tech-item:hover {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.15);
+            transform: scale(1.05);
+        }
+        
+        .tech-item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .tech-item-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        /* ==================== FILE STRUCTURE ==================== */
+        .file-tree {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+        }
+        
+        .file-item {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+        
+        .file-item:hover {
+            color: var(--accent-purple);
+            padding-left: 0.5rem;
+        }
+        
+        .file-item.file {
+            color: var(--accent-cyan);
+        }
+        
+        .file-item.folder {
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+        
+        .file-indent {
+            display: inline-block;
+            width: 1.5rem;
+        }
+        
+        /* ==================== CODE SNIPPET ==================== */
+        .code-snippet {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(168, 85, 247, 0.05);
+        }
+        
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+        
+        .code-content {
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .code-content code {
+            color: inherit;
+        }
+        
+        /* ==================== QUICK START ==================== */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .step-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            padding-left: 4rem;
+            transition: var(--transition-normal);
+            opacity: 0;
+            animation: slideInLeft 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .step-card:nth-child(1) { animation-delay: 0.1s; }
+        .step-card:nth-child(2) { animation-delay: 0.2s; }
+        .step-card:nth-child(3) { animation-delay: 0.3s; }
+        .step-card:nth-child(4) { animation-delay: 0.4s; }
+        .step-card:nth-child(5) { animation-delay: 0.5s; }
+        
+        .step-number {
+            position: absolute;
+            left: 1.5rem;
+            top: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-cyan);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+        
+        .step-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .step-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .command-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid var(--accent-green);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            position: relative;
+        }
+        
+        /* ==================== FAQ ==================== */
+        .faq-item {
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: var(--transition-normal);
+        }
+        
+        .faq-item:hover {
+            border-color: var(--accent-purple);
+            background: rgba(168, 85, 247, 0.1);
+        }
+        
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            user-select: none;
+            transition: var(--transition-fast);
+        }
+        
+        .faq-question:hover {
+            color: var(--accent-purple);
+        }
+        
+        .faq-toggle {
+            font-size: 1.2rem;
+            transition: var(--transition-normal);
+        }
+        
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-normal);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+        
+        .faq-answer p {
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        /* ==================== FOOTER ==================== */
+        .footer {
+            background: linear-gradient(180deg, rgba(10, 10, 20, 0.5) 0%, rgba(10, 10, 20, 0.8) 100%);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-purple);
+        }
+        
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            margin: 2rem 0;
+        }
+        
+        .footer-bottom {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+        
+        /* ==================== UTILITY CLASSES ==================== */
+        .highlight {
+            color: var(--accent-purple);
+        }
+        
+        .section-offset {
+            margin-top: 70px;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 1rem;
+            }
+            
+            .navbar-menu {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .section {
+                padding: 3rem 1rem;
+            }
+            
+            .hero {
+                padding: 5rem 1rem 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .code-content {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#hero" class="navbar-logo">
+            <span class="logo-icon">🔮</span>
+            <span>DeepSeek Backup</span>
+        </a>
+        <ul class="navbar-menu">
+            <li><a href="#why">Why?</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#quickstart">Quick Start</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <div class="navbar-cta">
+            <a href="https://github.com/realtuku/deepseek-backup" target="_blank" class="btn btn-secondary">
+                <span>🐙</span> GitHub
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero section-offset" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                ✨ Never lose your conversations again
+            </div>
+            <h1>DeepSeek Backup</h1>
+            <p class="hero-subtitle">
+                A lightweight Python toolkit to backup every DeepSeek chat to individual .txt files — complete with timestamps and chat-start times. <span class="highlight">100% local. Zero vendor lock-in.</span>
+            </p>
+            <div class="hero-cta">
+                <a href="#quickstart" class="btn btn-primary">
+                    <span>🚀</span> Get Started
+                </a>
+                <a href="https://github.com/realtuku/deepseek-backup" target="_blank" class="btn btn-secondary">
+                    <span>📖</span> View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Why Section -->
+    <section class="why-section section-offset" id="why">
+        <div class="container">
+            <div class="why-content">
+                <div class="why-text">
+                    <h2>Why DeepSeek Backup?</h2>
+                    <p>
+                        DeepSeek <span class="highlight">does not provide a chat export or backup feature</span>. If you have hundreds of conversations with code, ideas, research, and late-night thoughts — they live and die inside the browser.
+                    </p>
+                    <p>
+                        This project was born from real frustration. It started as a fragile Selenium scraper and evolved — through trial, error, and DevTools spelunking — into a <span class="highlight">clean, direct-API backup solution</span>.
+                    </p>
+                    <p>
+                        <strong>No browser automation. No DOM scraping. No selectors that break next week.</strong> Just pure HTTP, verified against the live API.
+                    </p>
+                    <div class="problem-statement">
+                        <strong>🔴 The Problem:</strong> Your DeepSeek chats are trapped in a browser session. No native export. No backup. One logout = loss of history.
+                    </div>
+                </div>
+                <div>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(168,85,247);stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:rgb(59,130,246);stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='90' fill='url(%23grad)' opacity='0.2'/%3E%3Ccircle cx='100' cy='100' r='70' fill='none' stroke='url(%23grad)' stroke-width='2'/%3E%3Ctext x='50%25' y='50%25' font-size='80' text-anchor='middle' dominant-baseline='central' fill='url(%23grad)'%3E🔮%3C/text%3E%3C/svg%3E" alt="DeepSeek Backup" style="width: 100%; max-width: 300px; margin-top: 2rem;">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="section section-offset" id="features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Direct API Access</h3>
+                    <p>Uses DeepSeek's own `/api/v0/` endpoints — no Selenium at runtime. 50x faster than scraping.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>One File Per Chat</h3>
+                    <p>Each conversation gets its own `.txt` file, named after the title. Easy to organize and search.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <h3>Full Timestamps</h3>
+                    <p>12-hour format `hh:mm:ss AM/PM - dd mm yy` per message. Know exactly when each thought was captured.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📌</div>
+                    <h3>Smart Sorting</h3>
+                    <p>Pinned chats first, then newest-first. Your most important conversations are always accessible.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Auto Credential Grabber</h3>
+                    <p>Separate script grabs token + cookies from Chrome. Zero manual copy-paste needed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🪟</div>
+                    <h3>Windows 10 Friendly</h3>
+                    <p>Runs perfectly from Python IDLE. No complex setup. Auto-installs dependencies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- File Structure Section -->
+    <section class="section section-offset">
+        <div class="container">
+            <h2 class="section-title">Repository Structure</h2>
+            <div class="file-tree">
+                <div class="file-item folder">📁 deepseek-backup/</div>
+                <div class="file-item file">
+                    <span class="file-indent"></span>
+                    <a href="https://github.com/realtuku/deepseek-backup/blob/main/README.md" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">📄 README.md</a> — Full documentation
+                </div>
+                <div class="file-item file">
+                    <span class="file-indent"></span>
+                    <a href="https://github.com/realtuku/deepseek-backup/blob/main/deepseek_backup.py" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">🐍 deepseek_backup.py</a> — Main backup script
+                </div>
+                <div class="file-item file">
+                    <span class="file-indent"></span>
+                    <a href="https://github.com/realtuku/deepseek-backup/blob/main/get_credentials.py" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">🔑 get_credentials.py</a> — Auto credential extractor
+                </div>
+                <div class="file-item file">
+                    <span class="file-indent"></span>
+                    <a href="https://github.com/realtuku/deepseek-backup/blob/main/LICENSE" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">📜 LICENSE</a> — MIT License
+                </div>
+                <div class="file-item file">
+                    <span class="file-indent"></span>
+                    <a href="https://github.com/realtuku/deepseek-backup/blob/main/.gitignore" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">🚫 .gitignore</a> — Security settings
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Tech Stack Section -->
+    <section class="section section-offset">
+        <div class="container">
+            <h2 class="section-title">Tech Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-item-icon">🐍</div>
+                    <div class="tech-item-name">Python 3.9+</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">📡</div>
+                    <div class="tech-item-name">Requests Library</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🌐</div>
+                    <div class="tech-item-name">REST API</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">⚡</div>
+                    <div class="tech-item-name">No Selenium</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🪟</div>
+                    <div class="tech-item-name">Windows 10+</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">📦</div>
+                    <div class="tech-item-name">Zero Config</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quick Start Section -->
+    <section class="section section-offset" id="quickstart">
+        <div class="container">
+            <h2 class="section-title">Quick Start Guide</h2>
+            <div class="steps">
+                <div class="step-card">
+                    <div class="step-number">1️⃣</div>
+                    <h3>Clone the Repo</h3>
+                    <p>Get the latest code from GitHub and navigate to the directory.</p>
+                    <div class="command-box">$ git clone https://github.com/realtuku/deepseek-backup.git</div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2️⃣</div>
+                    <h3>Get Your Credentials</h3>
+                    <p>Run the helper script — it opens Chrome and auto-grabs your token.</p>
+                    <div class="command-box">$ python get_credentials.py</div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3️⃣</div>
+                    <h3>Configure the Script</h3>
+                    <p>Paste your credentials into the CONFIG block in `deepseek_backup.py`.</p>
+                    <div class="command-box">AUTHORIZATION = "Bearer ..."</div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4️⃣</div>
+                    <h3>Run the Backup</h3>
+                    <p>Execute the main script to backup all your DeepSeek chats.</p>
+                    <div class="command-box">$ python deepseek_backup.py</div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">5️⃣</div>
+                    <h3>Check Output</h3>
+                    <p>All your chats are now backed up in the `deepseek_backups/` folder.</p>
+                    <div class="command-box">$ ls deepseek_backups/</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Output Format Section -->
+    <section class="section section-offset">
+        <div class="container">
+            <h2 class="section-title">Output Format</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+                Each backed-up chat is saved as a well-formatted `.txt` file with timestamps and metadata.
+            </p>
+            <div class="code-snippet">
+                <div class="code-header">
+                    <span class="code-filename">example_chat.txt</span>
+                    <button class="btn btn-copy" onclick="copyCode()">📋 Copy</button>
+                </div>
+                <div class="code-content" id="codeBlock">
+=== DeepSeek Chat Backup ===
+Title: DeepSeek chat backup script
+Chat started: 03:02:12 PM - 02 10 2026
+Total messages: 14
+=============================
+
+User [03:04:47 PM - 02 10 2026]:
+F12 → Network → Fetch/XHR...
+
+Response [03:05:04 PM - 02 10 2026]:
+# 🧭 No DevTools? No Problem...
+You can grab credentials automatically using our helper script.
+
+User [03:06:11 PM - 02 10 2026]:
+How do I get started with the backup?
+
+Response [03:06:29 PM - 02 10 2026]:
+1. Clone the repository
+2. Run get_credentials.py
+3. Configure deepseek_backup.py
+4. Execute and watch your chats get backed up!
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section class="section section-offset" id="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Is my token secure? 🔒</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Your token is a session key — keep it private. Never commit credentials to GitHub. The `.gitignore` file excludes `credentials.txt` by default. If you accidentally expose it, log out and back into DeepSeek to rotate the token.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Does this require Selenium? 🤖</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>No! Unlike earlier versions, the main `deepseek_backup.py` script uses pure HTTP via the `requests` library. Only the optional `get_credentials.py` script uses Chrome automation to grab credentials — and that's only needed once.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How fast does it backup? ⚡</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Incredibly fast. Direct API access means 30 chats back up in ~15 seconds. No DOM scraping, no delays. There's a small `REQUEST_DELAY` between API calls to be respectful to DeepSeek's servers.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What if the API changes? 🔄</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>If DeepSeek changes their API, pull requests are welcome! This is an open-source project. The API contract is verified against live data, so we catch breaks quickly.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Do I need internet? 🌐</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, to backup your chats from DeepSeek's servers. But once backed up, the `.txt` files are 100% local and don't require any internet connection to read or search.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Is it free? 💰</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Completely free! MIT License. Use, modify, and distribute as you like. Attribution appreciated but not required. This is a community project built with frustration and love.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>DeepSeek Backup</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Never lose your DeepSeek conversations again. Back them up locally, forever.
+            </p>
+            <div class="footer-links">
+                <a href="https://github.com/realtuku/deepseek-backup" target="_blank">🐙 GitHub</a>
+                <a href="https://github.com/realtuku/deepseek-backup/blob/main/README.md" target="_blank">📖 Documentation</a>
+                <a href="https://github.com/realtuku/deepseek-backup/blob/main/LICENSE" target="_blank">📜 License (MIT)</a>
+                <a href="https://github.com/realtuku" target="_blank">👨‍💻 Author</a>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Made with ❤️ by Ximanta • Because your conversations deserve to outlive the browser tab. 🌱</p>
+                <p style="margin-top: 1rem;">⭐ Give it a star if this saved your chats!</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // ==================== SCROLL ANIMATIONS ==================== //
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.feature-card, .step-card, .faq-item').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // ==================== SMOOTH SCROLL NAV ==================== //
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // ==================== FAQ ACCORDION ==================== //
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+        
+        // ==================== COPY TO CLIPBOARD ==================== //
+        function copyCode() {
+            const codeBlock = document.getElementById('codeBlock');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = 'var(--accent-green)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+        
+        // ==================== NAVBAR SCROLL EFFECT ==================== //
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (currentScroll > 50) {
+                navbar.style.background = 'rgba(10, 10, 20, 0.95)';
+                navbar.style.boxShadow = '0 2px 20px rgba(168, 85, 247, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 20, 0.85)';
+                navbar.style.boxShadow = 'none';
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        });
+        
+        // ==================== PAGE LOAD ANIMATIONS ==================== //
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
